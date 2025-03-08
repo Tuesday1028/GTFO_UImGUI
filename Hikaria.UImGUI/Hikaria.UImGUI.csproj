@@ -1,0 +1,56 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>disable</Nullable>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DefineConstants>$(DefineConstants);UIMGUI_REMOVE_IMNODES;UIMGUI_REMOVE_IMPLOT;UIMGUI_REMOVE_IMGUIZMO</DefineConstants>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Reference Include="GlobalFramework-ASM">
+      <HintPath>..\..\..\..\Program Files (x86)\Steam\steamapps\common\GTFO\BepInEx\interop\GlobalFramework-ASM.dll</HintPath>
+    </Reference>
+    <Reference Include="Il2CppInterop.Runtime">
+      <HintPath>..\..\..\..\Program Files (x86)\Steam\steamapps\common\GTFO\BepInEx\core\Il2CppInterop.Runtime.dll</HintPath>
+    </Reference>
+    <Reference Include="Il2Cppmscorlib">
+      <HintPath>..\..\..\..\Program Files (x86)\Steam\steamapps\common\GTFO\BepInEx\interop\Il2Cppmscorlib.dll</HintPath>
+    </Reference>
+    <Reference Include="ImGui.NET">
+      <HintPath>Libs\imgui\ImGui.NET.dll</HintPath>
+    </Reference>
+    <Reference Include="ImGuizmo.NET">
+      <HintPath>Libs\imguizmo\ImGuizmo.NET.dll</HintPath>
+    </Reference>
+    <Reference Include="ImNodes.NET">
+      <HintPath>Libs\imnodes\ImNodes.NET.dll</HintPath>
+    </Reference>
+    <Reference Include="ImPlot.NET">
+      <HintPath>Libs\implot\ImPlot.NET.dll</HintPath>
+    </Reference>
+    <Reference Include="Modules-ASM">
+      <HintPath>..\..\..\..\Program Files (x86)\Steam\steamapps\common\GTFO\BepInEx\interop\Modules-ASM.dll</HintPath>
+    </Reference>
+    <Reference Include="TheArchive.Core">
+      <HintPath>..\..\GTFO_TheArchive\TheArchive.Core\bin\R_BIE\TheArchive.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.AssetBundleModule">
+      <HintPath>..\..\..\..\Program Files (x86)\Steam\steamapps\common\GTFO\BepInEx\interop\UnityEngine.AssetBundleModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.CoreModule">
+      <HintPath>..\..\..\..\Program Files (x86)\Steam\steamapps\common\GTFO\BepInEx\interop\UnityEngine.CoreModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.IMGUIModule">
+      <HintPath>..\..\..\..\Program Files (x86)\Steam\steamapps\common\GTFO\BepInEx\interop\UnityEngine.IMGUIModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.InputLegacyModule">
+      <HintPath>..\..\..\..\Program Files (x86)\Steam\steamapps\common\GTFO\BepInEx\interop\UnityEngine.InputLegacyModule.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+</Project>
