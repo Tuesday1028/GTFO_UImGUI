@@ -1,4 +1,5 @@
 ﻿using Globals;
+using Il2CppInterop.Runtime.Attributes;
 using TheArchive.Core.Attributes;
 using TheArchive.Core.FeaturesAPI;
 using TheArchive.Loader;
@@ -16,8 +17,6 @@ namespace Hikaria.UImGUI
         public override void Init()
         {
             LoaderWrapper.ClassInjector.RegisterTypeInIl2Cpp<UImGui>();
-            //LoaderWrapper.ClassInjector.RegisterTypeInIl2Cpp<UImGuiBase>();
-            //LoaderWrapper.ClassInjector.RegisterTypeInIl2Cpp<UImGuiStaticBase>();
         }
 
         private static bool isInited = false;

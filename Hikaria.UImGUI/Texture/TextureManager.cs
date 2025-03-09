@@ -29,18 +29,20 @@ namespace Hikaria.UImGUI.Texture
 				filterMode = FilterMode.Point
 			};
 
-            // 使用 System.Span 或直接使用 Buffer.BlockCopy
             byte[] textureData = new byte[width * height * bytesPerPixel];
 
-            for (int y = 0; y < height; ++y)
+            fixed (byte* dstPtr = textureData)
             {
-                int srcOffset = y * width * bytesPerPixel;
-                int dstOffset = (height - y - 1) * width * bytesPerPixel;
-                Buffer.BlockCopy(new Span<byte>(pixels, width * height * bytesPerPixel).ToArray(),
-                                 srcOffset,
-                                 textureData,
-                                 dstOffset,
-                                 width * bytesPerPixel);
+                int stride = width * bytesPerPixel;
+                for (int y = 0; y < height; ++y)
+                {
+                    Buffer.MemoryCopy(
+                        pixels + y * stride,
+                        dstPtr + (height - y - 1) * stride,
+                        stride,
+                        stride
+                    );
+                }
             }
 
             _atlasTexture.LoadRawTextureData(textureData);

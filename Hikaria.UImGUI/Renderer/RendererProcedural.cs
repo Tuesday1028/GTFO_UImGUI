@@ -13,93 +13,92 @@ using Object = UnityEngine.Object;
 
 namespace Hikaria.UImGUI.Renderer
 {
-    /// <summary>
-    /// Renderer bindings in charge of producing instructions for rendering ImGui draw data.
-    /// Uses DrawProceduralIndirect to build geometry from a buffer of vertex data.
-    /// </summary>
-    /// <remarks>Requires shader model 4.5 level hardware.</remarks>
-    internal sealed class RendererProcedural : IRenderer
+	/// <summary>
+	/// Renderer bindings in charge of producing instructions for rendering ImGui draw data.
+	/// Uses DrawProceduralIndirect to build geometry from a buffer of vertex data.
+	/// </summary>
+	/// <remarks>Requires shader model 4.5 level hardware.</remarks>
+	internal sealed class RendererProcedural : IRenderer
 	{
-		private class GraphicsBuffer : IDisposable
+        [StructLayout(LayoutKind.Explicit)]
+        private class GraphicsBuffer : IDisposable
 		{
-            ~GraphicsBuffer()
-            {
-                Dispose(false);
-            }
+			[FieldOffset(16)]
+            public IntPtr m_Ptr;
 
-            public GraphicsBuffer(UnityEngine.GraphicsBuffer.Target target, int count, int stride)
-            {
+			~GraphicsBuffer()
+			{
+				Dispose(false);
+			}
+
+			public GraphicsBuffer(UnityEngine.GraphicsBuffer.Target target, int count, int stride)
+			{
                 bool flag = count <= 0;
-                if (flag)
-                {
-                    throw new ArgumentException("Attempting to create a zero length graphics buffer", "count");
-                }
-                bool flag2 = stride <= 0;
-                if (flag2)
-                {
-                    throw new ArgumentException("Attempting to create a graphics buffer with a negative or null stride", "stride");
-                }
-                bool flag3 = (target & UnityEngine.GraphicsBuffer.Target.Index) != (UnityEngine.GraphicsBuffer.Target)0 && stride != 2 && stride != 4;
-                if (flag3)
-                {
-                    throw new ArgumentException("Attempting to create an index buffer with an invalid stride: " + stride, "stride");
-                }
-                m_Ptr = UnityEngine.GraphicsBuffer.InitBuffer(target, count, stride);
+				if (flag)
+				{
+					throw new ArgumentException("Attempting to create a zero length graphics buffer", "count");
+				}
+				bool flag2 = stride <= 0;
+				if (flag2)
+				{
+					throw new ArgumentException("Attempting to create a graphics buffer with a negative or null stride", "stride");
+				}
+				bool flag3 = (target & UnityEngine.GraphicsBuffer.Target.Index) != (UnityEngine.GraphicsBuffer.Target)0 && stride != 2 && stride != 4;
+				if (flag3)
+				{
+					throw new ArgumentException("Attempting to create an index buffer with an invalid stride: " + stride, "stride");
+				}
+				m_Ptr = UnityEngine.GraphicsBuffer.InitBuffer(target, count, stride);
+				//gch_indexBufferData = GCHandle.Alloc(m_Ptr);
             }
 
-            public void Dispose()
-            {
-                Dispose(true);
-                GC.SuppressFinalize(this);
-            }
+			public void Dispose()
+			{
+				Dispose(true);
+				GC.SuppressFinalize(this);
+			}
 
-            private void Dispose(bool disposing)
-            {
-                if (disposing)
-                {
+			private void Dispose(bool disposing)
+			{
+				if (disposing)
+				{
                     GraphicsBuffer_DestroyBufferDelegateField(this);
                 }
-                else
-                {
-                    bool flag = m_Ptr != IntPtr.Zero;
-                    if (flag)
-                    {
-                        Debug.LogWarning("GarbageCollector disposing of GraphicsBuffer. Please use GraphicsBuffer.Release() or .Dispose() to manually release the buffer.");
-                    }
-                }
-                m_Ptr = IntPtr.Zero;
-            }
+				else
+				{
+					bool flag = m_Ptr != IntPtr.Zero;
+					if (flag)
+					{
+						Debug.LogWarning("GarbageCollector disposing of GraphicsBuffer. Please use GraphicsBuffer.Release() or .Dispose() to manually release the buffer.");
+					}
+				}
+				m_Ptr = IntPtr.Zero;
+			}
 
             public bool IsValid()
-            {
-                return m_Ptr != IntPtr.Zero;
-            }
+			{
+				return m_Ptr != IntPtr.Zero;
+			}
 
-            public void Release()
-            {
-                Dispose();
-            }
+			public void Release()
+			{
+				Dispose();
+			}
 
-			public int count => GraphicsBuffer_get_countDelegateField(this);
-
-            public int stride => GraphicsBuffer_get_strideDelegateField(this);
-
-            public IntPtr m_Ptr;
+            public int count => GraphicsBuffer_get_countDelegateField(this);
 		}
 
-        private static readonly GraphicsBuffer_DestroyBufferDelegate GraphicsBuffer_DestroyBufferDelegateField = IL2CPP.ResolveICall<GraphicsBuffer_DestroyBufferDelegate>("UnityEngine.GraphicsBuffer::DestroyBuffer");
-        private static readonly GraphicsBuffer_get_countDelegate GraphicsBuffer_get_countDelegateField = IL2CPP.ResolveICall<GraphicsBuffer_get_countDelegate>("UnityEngine.GraphicsBuffer::get_count");
-        private static readonly GraphicsBuffer_get_strideDelegate GraphicsBuffer_get_strideDelegateField = IL2CPP.ResolveICall<GraphicsBuffer_get_strideDelegate>("UnityEngine.GraphicsBuffer::get_stride");
-        private static readonly GraphicsBuffer_InternalSetNativeDataDelegate GraphicsBuffer_InternalSetNativeDataDelegateField = IL2CPP.ResolveICall<GraphicsBuffer_InternalSetNativeDataDelegate>("UnityEngine.GraphicsBuffer::InternalSetNativeData");
-        private static readonly CommandBuffer_Internal_DrawProceduralIndexedIndirectDelegate CommandBuffer_Internal_DrawProceduralIndexedIndirectDelegateField = IL2CPP.ResolveICall<CommandBuffer_Internal_DrawProceduralIndexedIndirectDelegate>("UnityEngine.Rendering.CommandBuffer::Internal_DrawProceduralIndexedIndirect_Injected");
+		private static readonly GraphicsBuffer_DestroyBufferDelegate GraphicsBuffer_DestroyBufferDelegateField = IL2CPP.ResolveICall<GraphicsBuffer_DestroyBufferDelegate>("UnityEngine.GraphicsBuffer::DestroyBuffer");
+		private static readonly GraphicsBuffer_get_countDelegate GraphicsBuffer_get_countDelegateField = IL2CPP.ResolveICall<GraphicsBuffer_get_countDelegate>("UnityEngine.GraphicsBuffer::get_count");
+		private static readonly GraphicsBuffer_InternalSetNativeDataDelegate GraphicsBuffer_InternalSetNativeDataDelegateField = IL2CPP.ResolveICall<GraphicsBuffer_InternalSetNativeDataDelegate>("UnityEngine.GraphicsBuffer::InternalSetNativeData");
+		private static readonly CommandBuffer_Internal_DrawProceduralIndexedIndirectDelegate CommandBuffer_Internal_DrawProceduralIndexedIndirectDelegateField = IL2CPP.ResolveICall<CommandBuffer_Internal_DrawProceduralIndexedIndirectDelegate>("UnityEngine.Rendering.CommandBuffer::Internal_DrawProceduralIndexedIndirect_Injected");
 
-        private delegate void GraphicsBuffer_DestroyBufferDelegate(GraphicsBuffer buf);
-        private delegate int GraphicsBuffer_get_countDelegate(GraphicsBuffer buf);
-        private delegate int GraphicsBuffer_get_strideDelegate(GraphicsBuffer buf);
-        private delegate void GraphicsBuffer_InternalSetNativeDataDelegate(GraphicsBuffer buf, IntPtr data, int nativeBufferStartIndex, int graphicsBufferStartIndex, int count, int elemSize);
-        private delegate void CommandBuffer_Internal_DrawProceduralIndexedIndirectDelegate(IntPtr commandBuffer, GraphicsBuffer indexBuffer, Matrix4x4 matrix, IntPtr material, int shaderPass, MeshTopology topology, IntPtr bufferWithArgs, int argsOffset, IntPtr properties);
+		private delegate void GraphicsBuffer_DestroyBufferDelegate(GraphicsBuffer buf);
+		private delegate int GraphicsBuffer_get_countDelegate(GraphicsBuffer buf);
+		private delegate void GraphicsBuffer_InternalSetNativeDataDelegate(GraphicsBuffer buf, IntPtr data, int nativeBufferStartIndex, int graphicsBufferStartIndex, int count, int elemSize);
+		private delegate void CommandBuffer_Internal_DrawProceduralIndexedIndirectDelegate(IntPtr commandBuffer, GraphicsBuffer indexBuffer, Matrix4x4 matrix, IntPtr material, int shaderPass, MeshTopology topology, IntPtr bufferWithArgs, int argsOffset, IntPtr properties);
 
-        private readonly Shader _shader;
+		private readonly Shader _shader;
 		private readonly int _textureID;
 		private readonly int _verticesID;
 		private readonly int _baseVertexID;
@@ -125,7 +124,7 @@ namespace Hikaria.UImGUI.Renderer
 			_textureID = Shader.PropertyToID(resources.PropertyNames.Texture);
 			_verticesID = Shader.PropertyToID(resources.PropertyNames.Vertices);
 			_baseVertexID = Shader.PropertyToID(resources.PropertyNames.BaseVertex);
-        }
+		}
 
 		public void Initialize(ImGuiIOPtr io)
 		{
@@ -169,10 +168,9 @@ namespace Hikaria.UImGUI.Renderer
 			cmd.EndSample(Constants.ExecuteDrawCommandsMarker);
 		}
 
-        private void CreateOrResizeVtxBuffer(ref ComputeBuffer buffer, int count)
+		private void CreateOrResizeVtxBuffer(ref ComputeBuffer buffer, int count)
 		{
 			buffer?.Release();
-
 			unsafe
 			{
 				int num = (((count - 1) / 256) + 1) * 256;
@@ -183,11 +181,10 @@ namespace Hikaria.UImGUI.Renderer
 		private void CreateOrResizeIdxBuffer(ref GraphicsBuffer buffer, int count)
 		{
 			buffer?.Release();
-
-			unsafe
+            unsafe
 			{
 				int num = (((count - 1) / 256) + 1) * 256;
-                buffer = new GraphicsBuffer(UnityEngine.GraphicsBuffer.Target.Index, num, sizeof(ushort));
+				buffer = new GraphicsBuffer(UnityEngine.GraphicsBuffer.Target.Index, num, sizeof(ushort));
             }
 		}
 
@@ -203,7 +200,7 @@ namespace Hikaria.UImGUI.Renderer
 
 		private unsafe void UpdateBuffers(ImDrawDataPtr drawData)
 		{
-            int drawArgCount = 0; // nr of drawArgs is the same as the nr of ImDrawCmd
+			int drawArgCount = 0; // nr of drawArgs is the same as the nr of ImDrawCmd
 			for (int n = 0, nMax = drawData.CmdListsCount; n < nMax; ++n)
 			{
 				drawArgCount += drawData.CmdLists[n].CmdBuffer.Size;
@@ -220,43 +217,42 @@ namespace Hikaria.UImGUI.Renderer
 				CreateOrResizeIdxBuffer(ref _indexBuffer, drawData.TotalIdxCount);
 			}
 
-			if (_argumentsBuffer == null || _argumentsBuffer.count < drawArgCount * 5)
+            if (_argumentsBuffer == null || _argumentsBuffer.count < drawArgCount * 5)
 			{
 				CreateOrResizeArgBuffer(ref _argumentsBuffer, drawArgCount * 5);
 			}
 
-            // upload vertex/index data into buffers
-            int vtxOf = 0;
+			// upload vertex/index data into buffers
+			int vtxOf = 0;
 			int idxOf = 0;
 			int argOf = 0;
 			for (int n = 0, nMax = drawData.CmdListsCount; n < nMax; ++n)
 			{
 				ImDrawListPtr drawList = drawData.CmdLists[n];
 
-                ImDrawVert[] vtxArray = new ImDrawVert[drawList.VtxBuffer.Size];
-                ushort[] idxArray = new ushort[drawList.IdxBuffer.Size];
+				ImDrawVert[] vtxArray = new ImDrawVert[drawList.VtxBuffer.Size];
+				fixed (ImDrawVert* pDest = vtxArray)
+				{
+					Buffer.MemoryCopy(
+						(void*)drawList.VtxBuffer.Data,
+						pDest,
+						vtxArray.Length * sizeof(ImDrawVert),
+						vtxArray.Length * sizeof(ImDrawVert)
+					);
+					_vertexBuffer.InternalSetNativeData((IntPtr)pDest, 0, vtxOf, vtxArray.Length, sizeof(ImDrawVert));
+				}
 
-                fixed (ImDrawVert* pDest = vtxArray)
-                {
-                    Buffer.MemoryCopy(
-                        (void*)drawList.VtxBuffer.Data,
-                        pDest,
-                        vtxArray.Length * sizeof(ImDrawVert),
-                        vtxArray.Length * sizeof(ImDrawVert)
-                    );
-                    _vertexBuffer.InternalSetNativeData((IntPtr)pDest, 0, vtxOf, vtxArray.Length, sizeof(ImDrawVert));
-                }
-
-                fixed (ushort* pDest = idxArray)
-                {
-                    Buffer.MemoryCopy(
-                        (void*)drawList.IdxBuffer.Data,
-                        pDest,
-                        idxArray.Length * sizeof(ushort),
-                        idxArray.Length * sizeof(ushort)
-                    );
-                    GraphicsBuffer_InternalSetNativeDataDelegateField(_indexBuffer, (IntPtr)pDest, 0, idxOf, idxArray.Length, sizeof(ushort));
-                }
+				ushort[] idxArray = new ushort[drawList.IdxBuffer.Size];
+				fixed (ushort* pDest = idxArray)
+				{
+					Buffer.MemoryCopy(
+						 (void*)drawList.IdxBuffer.Data,
+						 pDest,
+						 idxArray.Length * sizeof(ushort),
+						 idxArray.Length * sizeof(ushort)
+					 );
+					GraphicsBuffer_InternalSetNativeDataDelegateField(_indexBuffer, (IntPtr)pDest, 0, idxOf, idxArray.Length, sizeof(ushort));
+				}
 
 				// Arguments for indexed draw.
 				for (int meshIndex = 0, iMax = drawList.CmdBuffer.Size; meshIndex < iMax; ++meshIndex)
@@ -272,9 +268,9 @@ namespace Hikaria.UImGUI.Renderer
 					};
 					fixed (int* pDest = drawArgs)
 					{
-                        _argumentsBuffer.InternalSetNativeData((IntPtr)pDest, 0, argOf, 5, sizeof(int));
-                    }
-                    argOf += 5; // 5 int for each command.
+						_argumentsBuffer.InternalSetNativeData((IntPtr)pDest, 0, argOf, 5, sizeof(int));
+					}
+					argOf += 5; // 5 int for each command.
 				}
 				vtxOf += vtxArray.Length;
 				idxOf += idxArray.Length;
@@ -336,9 +332,9 @@ namespace Hikaria.UImGUI.Renderer
 						_materialProperties.SetInt(_baseVertexID, vtxOf + (int)drawCmd.VtxOffset);
 
 						cmd.EnableScissorRect(new Rect(clip.x, fbSize.y - clip.w, clip.z - clip.x, clip.w - clip.y)); // Invert y.
-                        CommandBuffer_Internal_DrawProceduralIndexedIndirectDelegateField(cmd.Pointer, _indexBuffer, Matrix4x4.identity, _material.Pointer, -1, 
+                        CommandBuffer_Internal_DrawProceduralIndexedIndirectDelegateField(cmd.Pointer, _indexBuffer, Matrix4x4.identity, _material.Pointer, -1,
 							MeshTopology.Triangles, _argumentsBuffer.Pointer, argOf, _materialProperties.Pointer);
-                    }
+					}
 				}
 				vtxOf += drawList.VtxBuffer.Size;
 			}
