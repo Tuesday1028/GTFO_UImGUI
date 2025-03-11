@@ -98,11 +98,12 @@ namespace ImGuiNET
             // no font config asset: use defaults
             if (settings == null)
             {
+                var fontPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "Assets/Fonts");
                 ImFontConfig* config = ImGuiNative.ImFontConfig_ImFontConfig();
                 config->MergeMode = 0;
-                io.Fonts.AddFontFromFileTTF(Path.Combine(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "Assets", "微软雅黑.ttf")), 28f, config, io.Fonts.GetGlyphRangesChineseFull());
+                io.Fonts.AddFontFromFileTTF(Path.Combine(fontPath, "MSYH.ttf"), 28f, config, io.Fonts.GetGlyphRangesChineseFull());
                 config->MergeMode = 1;
-                io.Fonts.AddFontFromFileTTF(Path.Combine(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "Assets", "NotoSansJP-Regular.ttf")), 28f, config, io.Fonts.GetGlyphRangesJapanese());
+                io.Fonts.AddFontFromFileTTF(Path.Combine(fontPath, "NotoSansJP-Regular.ttf"), 28f, config, io.Fonts.GetGlyphRangesJapanese());
                 io.Fonts.Build();
                 return;
             }
@@ -134,7 +135,7 @@ namespace ImGuiNET
                     break;
 #if IMGUI_FEATURE_FREETYPE
                 case FontRasterizerType.FreeType:
-                    ImFreetype.BuildFontAtlas(io.Fonts, (ImFreetype.RasterizerFlags)settings.RasterizerFlags);
+                    ImFreetype.BuildFontAtlas(io.Fonts, settings.FontBuilderFlags);
                     break;
 #endif
                 default:

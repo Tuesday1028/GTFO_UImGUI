@@ -1,3 +1,6 @@
 ﻿using System.Runtime.CompilerServices;
 
-[assembly: InternalsVisibleTo("ImGuiNET.Unity")]
+[assembly: InternalsVisibleTo("ImGui.NET.Unity")]
+[assembly: InternalsVisibleTo("ImGuizmo.NET")]
+[assembly: InternalsVisibleTo("ImPlot.NET")]
+[assembly: InternalsVisibleTo("ImNodes.NET")]

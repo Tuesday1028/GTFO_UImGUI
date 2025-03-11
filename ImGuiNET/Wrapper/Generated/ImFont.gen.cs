@@ -21,12 +21,12 @@ namespace ImGuiNET
         public ushort FallbackChar;
         public float EllipsisWidth;
         public float EllipsisCharStep;
-        public byte DirtyLookupTables;
         public float Scale;
         public float Ascent;
         public float Descent;
         public int MetricsTotalSurface;
-        public fixed byte Used4kPagesMap[2];
+        public byte DirtyLookupTables;
+        public fixed byte Used8kPagesMap[1];
     }
     public unsafe partial struct ImFontPtr
     {
@@ -50,12 +50,12 @@ namespace ImGuiNET
         public ref ushort FallbackChar => ref Unsafe.AsRef<ushort>(&NativePtr->FallbackChar);
         public ref float EllipsisWidth => ref Unsafe.AsRef<float>(&NativePtr->EllipsisWidth);
         public ref float EllipsisCharStep => ref Unsafe.AsRef<float>(&NativePtr->EllipsisCharStep);
-        public ref bool DirtyLookupTables => ref Unsafe.AsRef<bool>(&NativePtr->DirtyLookupTables);
         public ref float Scale => ref Unsafe.AsRef<float>(&NativePtr->Scale);
         public ref float Ascent => ref Unsafe.AsRef<float>(&NativePtr->Ascent);
         public ref float Descent => ref Unsafe.AsRef<float>(&NativePtr->Descent);
         public ref int MetricsTotalSurface => ref Unsafe.AsRef<int>(&NativePtr->MetricsTotalSurface);
-        public RangeAccessor<byte> Used4kPagesMap => new RangeAccessor<byte>(NativePtr->Used4kPagesMap, 2);
+        public ref bool DirtyLookupTables => ref Unsafe.AsRef<bool>(&NativePtr->DirtyLookupTables);
+        public RangeAccessor<byte> Used8kPagesMap => new RangeAccessor<byte>(NativePtr->Used8kPagesMap, 1);
         public void AddGlyph(ImFontConfigPtr src_cfg, ushort c, float x0, float y0, float x1, float y1, float u0, float v0, float u1, float v1, float advance_x)
         {
             ImFontConfig* native_src_cfg = src_cfg.NativePtr;

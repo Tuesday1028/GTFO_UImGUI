@@ -1,15 +1,9 @@
-﻿using Hikaria.UImGUI;
-using ImGuiNET.CoreCLR.Interop;
-using Unity.Collections.LowLevel.Unsafe;
+﻿using ImGuiNET.CoreCLR.Interop;
 using Unity.Profiling;
 using UnityEngine;
 using UnityEngine.Rendering;
 using GraphicsBuffer = ImGuiNET.CoreCLR.GraphicsBuffer;
 using Object = UnityEngine.Object;
-
-// TODO: switch from using ComputeBuffer to GraphicsBuffer
-// starting from 2020.1 API that takes ComputeBuffer can also take GraphicsBuffer
-// https://docs.unity3d.com/2020.1/Documentation/ScriptReference/GraphicsBuffer.Target.html
 
 namespace ImGuiNET
 {

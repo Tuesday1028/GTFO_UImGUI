@@ -17056,6 +17056,11 @@ namespace ImGuiNET
             byte ret = ImGuiNative.igIsMouseReleased_Nil(button);
             return ret != 0;
         }
+        public static bool IsMouseReleasedWithDelay(ImGuiMouseButton button, float delay)
+        {
+            byte ret = ImGuiNative.igIsMouseReleasedWithDelay(button, delay);
+            return ret != 0;
+        }
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP2_1_OR_GREATER
         public static bool IsPopupOpen(ReadOnlySpan<char> str_id)
         {

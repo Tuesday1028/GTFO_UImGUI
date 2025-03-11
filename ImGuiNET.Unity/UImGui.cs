@@ -10,6 +10,9 @@
 //
 
 
+using ImGuizmoNET;
+using ImNodesNET;
+using ImPlotNET;
 using Unity.Profiling;
 using UnityEngine;
 using UnityEngine.Rendering;
@@ -22,7 +25,7 @@ namespace ImGuiNET
 {
     // This component is responsible for setting up ImGui for use in Unity.
     // It holds the necessary context and sets it up before any operation is done to ImGui.
-    // (e.g. set the context, texture and font managers before calling Layout)
+    // (e.g. set the context, Texture and font managers before calling Layout)
 
     public enum RenderingMode
     {
@@ -63,37 +66,14 @@ namespace ImGuiNET
 
         public RenderingMode renderingMode = RenderingMode.IntoRenderTexture;
 
-        private IOConfig _initialConfiguration = new IOConfig()
-        {
-            ImGuiConfig = ImGuiConfigFlags.NavEnableKeyboard | ImGuiConfigFlags.DockingEnable,
+        private IOConfig _initialConfiguration = new();
 
-            DoubleClickTime = 0.30f,
-            DoubleClickMaxDist = 6.0f,
+        private FontAtlasConfigAsset _fontAtlasConfiguration = null;
+        private IniSettingsAsset _iniSettings = null; // null: uses default imgui.ini file
 
-            DragThreshold = 6.0f,
-
-            KeyRepeatDelay = 0.250f,
-            KeyRepeatRate = 0.050f,
-
-            FontGlobalScale = 1.0f,
-            FontAllowUserScaling = false,
-
-            DisplayFramebufferScale = Vector2.one,
-
-            MouseDrawCursor = false,
-            TextCursorBlink = false,
-
-            ResizeFromEdges = true,
-            MoveFromTitleOnly = true,
-            ConfigMemoryCompactTimer = 1f,
-        };
-
-        private FontAtlasConfigAsset fontAtlasConfiguration = null;
-        private IniSettingsAsset iniSettings = null; // null: uses default imgui.ini file
-
-        private ShaderResourcesAsset shaders = new();
-        private StyleAsset style = new();
-        private CursorShapesAsset cursorShapes = null;
+        private ShaderResourcesAsset _shaders = new();
+        private StyleAsset _style = null;
+        private CursorShapesAsset _cursorShapes = new();
 
         private const string CommandBufferTag = "DearImGui";
         private static readonly ProfilerMarker s_prepareFramePerfMarker = new("DearImGui.PrepareFrame");
@@ -270,14 +250,16 @@ namespace ImGuiNET
             ImGuiPlatformIOPtr platformio = ImGui.GetPlatformIO();
 
             _initialConfiguration.ApplyTo(io);
-            if (style != null)
-                style.ApplyTo(ImGui.GetStyle());
+            if (_style != null)
+                _style.ApplyTo(ImGui.GetStyle());
+            else
+                ImGui.StyleColorsDark();
 
-            _context.textures.BuildFontAtlas(io, fontAtlasConfiguration);
-            _context.textures.Initialize(io);
+            _context.Textures.BuildFontAtlas(io, _fontAtlasConfiguration);
+            _context.Textures.Initialize(io);
 
-            SetPlatform(Platform.Create(_platformType, cursorShapes, iniSettings), io, platformio);
-            SetRenderer(RenderUtils.Create(_rendererType, shaders, _context.textures), io);
+            SetPlatform(Platform.Create(_platformType, _cursorShapes, _iniSettings), io, platformio);
+            SetRenderer(RenderUtils.Create(_rendererType, _shaders, _context.Textures), io);
             if (_platform == null) Fail(nameof(_platform));
             if (_renderer == null) Fail(nameof(_renderer));
 
@@ -347,8 +329,8 @@ namespace ImGuiNET
 
             ImGuiUn.SetUnityContext(null);
 
-            _context.textures.Shutdown();
-            _context.textures.DestroyFontAtlas(io);
+            _context.Textures.Shutdown();
+            _context.Textures.DestroyFontAtlas(io);
 
             var cam = GetCamera();
             switch (_srpType)
@@ -427,9 +409,10 @@ namespace ImGuiNET
             ImGuiIOPtr io = ImGui.GetIO();
 
             s_prepareFramePerfMarker.Begin(this);
-            _context.textures.PrepareFrame(io);
+            _context.Textures.PrepareFrame(io);
             _platform.PrepareFrame(io, cam.pixelRect);
             ImGui.NewFrame();
+            ImGuizmo.BeginFrame();
             s_prepareFramePerfMarker.End();
 
             s_layoutPerfMarker.Begin(this);
@@ -464,6 +447,8 @@ namespace ImGuiNET
         }
 
         public static bool ShouldRender => ImGuiUn.ShouldRender;
+
+        public static bool ShouldBlockGameInput => ImGuiUn.ShouldBlockGameInput;
 
         public static UImGui Instance { get; private set; }
     }

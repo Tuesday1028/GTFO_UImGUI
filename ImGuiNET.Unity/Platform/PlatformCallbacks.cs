@@ -1,4 +1,5 @@
 ﻿using System.Runtime.InteropServices;
+using UnityEngine;
 
 namespace ImGuiNET
 {
@@ -44,14 +45,9 @@ namespace ImGuiNET
 
         public void Assign(ImGuiIOPtr io, ImGuiPlatformIOPtr platformio)
         {
-#if ENABLE_IL2CPP
-#else
             platformio.Platform_SetClipboardTextFn = Marshal.GetFunctionPointerForDelegate(_setClipboardText);
             platformio.Platform_GetClipboardTextFn = Marshal.GetFunctionPointerForDelegate(_getClipboardText);
             platformio.Platform_SetImeDataFn = Marshal.GetFunctionPointerForDelegate(_setImeData);
-#endif
-
-
 
 #if IMGUI_FEATURE_CUSTOM_ASSERT
             io.SetBackendPlatformUserData<CustomAssertData>(new CustomAssertData
@@ -87,6 +83,7 @@ namespace ImGuiNET
                 }
                 catch (Exception ex)
                 {
+                    Debug.LogError($"[UImGui::{nameof(PlatformCallbacks)}::{nameof(GetClipboardTextSafeCallback)}] {ex.Message}\n{ex.StackTrace}");
                     return null;
                 }
             };
@@ -97,7 +94,7 @@ namespace ImGuiNET
             set => _setClipboardText = (user_data, text) =>
             {
                 try { value(new IntPtr(user_data), Util.StringFromPtr(text)); }
-                catch (Exception ex) { }
+                catch (Exception ex) { Debug.LogError($"[UImGui::{nameof(PlatformCallbacks)}::{nameof(SetClipboardTextSafeCallback)}] {ex.Message}\n{ex.StackTrace}"); }
             };
         }
 
@@ -106,7 +103,7 @@ namespace ImGuiNET
             set => _setImeData = (user_data, viewport, data) =>
             {
                 try { value(new IntPtr(user_data), new ImGuiViewportPtr(new IntPtr(viewport)), new ImGuiPlatformImeDataPtr(new IntPtr(data))); }
-                catch (Exception ex) { }
+                catch (Exception ex) { Debug.LogError($"[UImGui::{nameof(PlatformCallbacks)}::{nameof(SetImeDataSafeCallback)}] {ex.Message}\n{ex.StackTrace}"); }
             };
         }
 

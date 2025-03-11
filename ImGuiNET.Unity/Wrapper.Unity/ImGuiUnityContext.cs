@@ -1,11 +1,15 @@
-﻿using UnityEngine;
+﻿using ImGuizmoNET;
+using ImNodesNET;
+using ImPlotNET;
+using UnityEngine;
 
 namespace ImGuiNET
 {
     public interface IImGuiLayout
     {
         string GuiName { get; }
-        bool ShouldRender { get; }
+        bool ShouldGuiRender { get; }
+        bool ShouldGuiBlockGameInput { get; }
 
         /// <summary>
         ///     Always invokes before the ImGui layout is done, even if <see cref="UImGui.ShouldRender"/> is false.
@@ -17,10 +21,10 @@ namespace ImGuiNET
 
     sealed class ImGuiUnityContext
     {
-        public IntPtr imGuiContext;     // ImGui internal imGuiContext
-        public IntPtr imNodesContext;
-        public IntPtr imPlotContext;
-        public TextureManager textures; // texture / font imGuiContext
+        public IntPtr ImGuiContext;     // ImGui internal ImGuiContext
+        public IntPtr ImNodesContext;
+        public IntPtr ImPlotContext;
+        public TextureManager Textures; // Texture / font ImGuiContext
     }
 
     public static unsafe partial class ImGuiUn
@@ -55,7 +59,7 @@ namespace ImGuiNET
             }
         }
 
-        internal static bool ShouldRender
+        internal static bool ShouldBlockGameInput
         {
             get
             {
@@ -64,7 +68,7 @@ namespace ImGuiNET
                 {
                     try
                     {
-                        result |= _guiLayouts[i].ShouldRender;
+                        result |= _guiLayouts[i].ShouldGuiBlockGameInput;
                     }
                     catch (Exception ex)
                     {
@@ -75,43 +79,71 @@ namespace ImGuiNET
             }
         }
 
-        public static void RegisterImGui(IImGuiLayout gui)
+        internal static bool ShouldRender
+        {
+            get
+            {
+                bool result = false;
+                for (int i = 0; i < _guiLayouts.Count; i++)
+                {
+                    try
+                    {
+                        result |= _guiLayouts[i].ShouldGuiRender;
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.LogError($"[ImGuiUn::GUI::{_guiLayouts[i].GuiName}] {ex}: {ex.Message}\n{ex.StackTrace}");
+                    }
+                }
+                return result;
+            }
+        }
+
+        public static void RegisterImGuiLayout(IImGuiLayout gui)
         {
             _guiLayouts.Add(gui);
         }
 
-        public static void UnregisterImGui(IImGuiLayout gui)
+        public static void UnregisterImGuiLayout(IImGuiLayout gui)
         {
             _guiLayouts.Remove(gui);
         }
 
         private static readonly List<IImGuiLayout> _guiLayouts = new List<IImGuiLayout>();
 
-        // textures
-        public static int GetTextureId(Texture texture) => s_currentUnityContext?.textures.GetTextureId(texture) ?? -1;
-        internal static SpriteInfo GetSpriteInfo(Sprite sprite) => s_currentUnityContext?.textures.GetSpriteInfo(sprite) ?? null;
+        // Textures
+        public static int GetTextureId(Texture texture) => s_currentUnityContext?.Textures.GetTextureId(texture) ?? -1;
+        internal static SpriteInfo GetSpriteInfo(Sprite sprite) => s_currentUnityContext?.Textures.GetSpriteInfo(sprite) ?? null;
 
         internal static ImGuiUnityContext s_currentUnityContext;
 
         internal static ImGuiUnityContext CreateUnityContext()
         {
-            return new ImGuiUnityContext 
-            {
-                imGuiContext = ImGui.CreateContext(),
-                textures = new TextureManager(),
-            };
+            var context = new ImGuiUnityContext();
+            context.ImGuiContext = ImGui.CreateContext();
+            ImGuizmo.SetImGuiContext(context.ImGuiContext);
+            ImPlot.CreateContext();
+            ImNodes.CreateContext();
+            context.Textures = new TextureManager();
+            return context;
         }
 
         internal static void DestroyUnityContext(ImGuiUnityContext context)
         {
             s_currentUnityContext = default;
-            ImGui.DestroyContext(context.imGuiContext);
+            ImNodes.DestroyContext(context.ImNodesContext);
+            ImPlot.DestroyContext(context.ImPlotContext);
+            ImGuizmo.SetImGuiContext(IntPtr.Zero);
+            ImGui.DestroyContext(context.ImGuiContext);
         }
 
         internal static void SetUnityContext(ImGuiUnityContext context)
         {
             s_currentUnityContext = context;
-            ImGui.SetCurrentContext(context?.imGuiContext ?? IntPtr.Zero);
+            ImGuizmo.SetImGuiContext(context?.ImGuiContext ?? IntPtr.Zero);
+            ImNodes.SetCurrentContext(context?.ImNodesContext ?? IntPtr.Zero);
+            ImPlot.SetCurrentContext(context?.ImPlotContext ?? IntPtr.Zero);
+            ImGui.SetCurrentContext(context?.ImGuiContext ?? IntPtr.Zero);
         }
     }
 }

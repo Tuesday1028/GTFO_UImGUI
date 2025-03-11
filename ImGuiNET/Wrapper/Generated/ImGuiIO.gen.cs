@@ -1,6 +1,7 @@
+using System;
+using UnityEngine;
 using System.Runtime.CompilerServices;
 using System.Text;
-using UnityEngine;
 
 namespace ImGuiNET
 {
@@ -257,6 +258,7 @@ namespace ImGuiNET
         public fixed ushort MouseClickedCount[5];
         public fixed ushort MouseClickedLastCount[5];
         public fixed byte MouseReleased[5];
+        public fixed double MouseReleasedTime[5];
         public fixed byte MouseDownOwned[5];
         public fixed byte MouseDownOwnedUnlessPopupClose[5];
         public byte MouseWheelRequestAxisSwap;
@@ -377,6 +379,7 @@ namespace ImGuiNET
         public RangeAccessor<ushort> MouseClickedCount => new RangeAccessor<ushort>(NativePtr->MouseClickedCount, 5);
         public RangeAccessor<ushort> MouseClickedLastCount => new RangeAccessor<ushort>(NativePtr->MouseClickedLastCount, 5);
         public RangeAccessor<bool> MouseReleased => new RangeAccessor<bool>(NativePtr->MouseReleased, 5);
+        public RangeAccessor<double> MouseReleasedTime => new RangeAccessor<double>(NativePtr->MouseReleasedTime, 5);
         public RangeAccessor<bool> MouseDownOwned => new RangeAccessor<bool>(NativePtr->MouseDownOwned, 5);
         public RangeAccessor<bool> MouseDownOwnedUnlessPopupClose => new RangeAccessor<bool>(NativePtr->MouseDownOwnedUnlessPopupClose, 5);
         public ref bool MouseWheelRequestAxisSwap => ref Unsafe.AsRef<bool>(&NativePtr->MouseWheelRequestAxisSwap);

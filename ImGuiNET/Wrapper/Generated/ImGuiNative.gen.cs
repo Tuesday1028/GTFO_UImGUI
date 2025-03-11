@@ -411,6 +411,8 @@ namespace ImGuiNET
         [DllImport("cimgui", CallingConvention = CallingConvention.Cdecl)]
         public static extern byte igIsMouseReleased_Nil(ImGuiMouseButton button);
         [DllImport("cimgui", CallingConvention = CallingConvention.Cdecl)]
+        public static extern byte igIsMouseReleasedWithDelay(ImGuiMouseButton button, float delay);
+        [DllImport("cimgui", CallingConvention = CallingConvention.Cdecl)]
         public static extern byte igIsPopupOpen_Str(byte* str_id, ImGuiPopupFlags flags);
         [DllImport("cimgui", CallingConvention = CallingConvention.Cdecl)]
         public static extern byte igIsRectVisible_Nil(Vector2 size);
@@ -1281,7 +1283,7 @@ namespace ImGuiNET
         [DllImport("cimgui", CallingConvention = CallingConvention.Cdecl)]
         public static extern void ImGuiTextBuffer_append(ImGuiTextBuffer* self, byte* str, byte* str_end);
         [DllImport("cimgui", CallingConvention = CallingConvention.Cdecl)]
-        public static extern void ImGuiTextBuffer_appendf(ImGuiTextBuffer* buffer, byte* fmt);
+        public static extern void ImGuiTextBuffer_appendf(ImGuiTextBuffer* self, byte* fmt);
         [DllImport("cimgui", CallingConvention = CallingConvention.Cdecl)]
         public static extern byte* ImGuiTextBuffer_begin(ImGuiTextBuffer* self);
         [DllImport("cimgui", CallingConvention = CallingConvention.Cdecl)]

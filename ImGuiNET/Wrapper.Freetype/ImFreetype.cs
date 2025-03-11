@@ -2,22 +2,17 @@
 {
     public static unsafe partial class ImFreetype
     {
-        public static bool BuildFontAtlas(ImFontAtlasPtr atlas, RasterizerFlags extra_flags)
-        {
-            return ImFreetypeNative.frBuildFontAtlas(atlas.NativePtr, (uint)extra_flags);
-        }
-
         /// <summary>
         /// Hinting greatly impacts visuals (and glyph sizes).
         /// When disabled, FreeType generates blurrier glyphs, more or less matches the stb's output.
         /// The Default hinting mode usually looks good, but may distort glyphs in an unusual way.
         /// The Light hinting mode generates fuzzier glyphs but butter matches Microsoft's rasterizer.
         ///
-        /// You can set those flags on a per font basis in ImFontConfigPtr.RasterizerFlags.
+        /// You can set those flags on a per font basis in ImFontConfigPtr.FontBuilderFlags.
         /// Use the 'extra_flags' parameter of BuildFontAtlas() to force a flag on all your fonts.
         /// </summary>
-        [System.Flags]
-        public enum RasterizerFlags : uint
+        [Flags]
+        public enum FontBuilderFlags : uint
         {
             ///<summary>By default, hinting is enabled and the font's native hinter is preferred over the auto hinter.</summary>
             None          = 0,

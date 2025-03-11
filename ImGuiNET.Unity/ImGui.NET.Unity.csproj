@@ -6,7 +6,7 @@
     <Nullable>disable</Nullable>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <RootNamespace>ImGuiNET</RootNamespace>
-    <AssemblyName></AssemblyName>
+    <AssemblyName>ImGui.NET.Unity</AssemblyName>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
@@ -62,7 +62,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ImGuiNET\ImGuiNET.csproj" />
+    <ProjectReference Include="..\ImGuiNET\ImGui.NET.csproj" />
+    <ProjectReference Include="..\ImGuizmoNET\ImGuizmo.NET.csproj" />
+    <ProjectReference Include="..\ImNodesNET\ImNodes.NET.csproj" />
+    <ProjectReference Include="..\ImPlotNET\ImPlot.NET.csproj" />
   </ItemGroup>
 
 </Project>

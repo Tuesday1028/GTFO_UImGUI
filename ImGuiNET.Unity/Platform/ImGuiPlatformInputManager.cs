@@ -2,7 +2,6 @@
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using System.Runtime.CompilerServices;
-using System.Text;
 
 #if USING_TMP
 using TMPro;
@@ -15,93 +14,30 @@ namespace ImGuiNET
     // [x] Platform: Mouse cursor shape and visibility. Disable with io.ConfigFlags |= ImGuiConfigFlags.NoMouseCursorChange.
     // [x] Platform: Keyboard arrays indexed using KeyCode codes, e.g. ImGui.IsKeyPressed(KeyCode.Space).
     // [ ] Platform: Gamepad support. Enabled with io.ConfigFlags |= ImGuiConfigFlags.NavEnableGamepad.
-    // [x] Platform: IME support.
+    // [~] Platform: IME support.
     // [~] Platform: INI settings support.
 
     /// <summary>
     /// Platform bindings for ImGui in Unity in charge of: mouse/keyboard/gamepad inputs, cursor shape, timing, windowing.
     /// </summary>
-    sealed class ImGuiPlatformInputManager : IImGuiPlatform
+    sealed class ImGuiPlatformInputManager : ImGuiPlatformBase
     {
-        static ImGuiPlatformInputManager()
-        {
-            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
-        }
-
+        readonly Event _textInputEvent = new Event();                                        // to get text input
         readonly KeyCode[] _keyCodes = (KeyCode[])Enum.GetValues(typeof(KeyCode));
 
-        readonly Event _textInputEvent = new Event();                                        // to get text input
-
-        readonly CursorShapesAsset _cursorShapes;                               // cursor shape definitions
-        ImGuiMouseCursor _lastCursor = ImGuiMouseCursor.COUNT;                  // last cursor requested by ImGui
-
-        readonly IniSettingsAsset _iniSettings;                                 // ini settings data
-
-        readonly PlatformCallbacks _callbacks = new PlatformCallbacks
+        public ImGuiPlatformInputManager(CursorShapesAsset cursorShapes, IniSettingsAsset iniSettings) : base(cursorShapes, iniSettings)
         {
-            GetClipboardText = (_) => GUIUtility.systemCopyBuffer,
-            SetClipboardText = (_, text) => GUIUtility.systemCopyBuffer = text,
-            SetImeData = (_, viewport, data) =>
-            {
-                Input.imeCompositionMode = data.WantVisible ? IMECompositionMode.On : IMECompositionMode.Auto;
-                Input.compositionCursorPos = data.InputPos;
-            },
-#if IMGUI_FEATURE_CUSTOM_ASSERT
-            LogAssert = (condition, file, line) => Debug.LogError($"[DearImGui] Assertion failed: '{condition}', file '{file}', line: {line}."),
-            DebugBreak = () => System.Diagnostics.Debugger.Break(),
-#endif
-        };
-
-        public ImGuiPlatformInputManager(CursorShapesAsset cursorShapes, IniSettingsAsset iniSettings)
-        {
-            _cursorShapes = cursorShapes;
-            _iniSettings = iniSettings;
-        }
-
-        public bool Initialize(ImGuiIOPtr io, ImGuiPlatformIOPtr platformio)
-        {
-            io.SetBackendPlatformName("Unity Input Manager");                   // setup backend info and capabilities
-            io.BackendFlags |= ImGuiBackendFlags.HasMouseCursors;               // can honor GetMouseCursor() values
-            io.BackendFlags &= ~ImGuiBackendFlags.HasSetMousePos;               // can't honor io.WantSetMousePos requests
-            // io.BackendFlags |= ImGuiBackendFlags.HasGamepad;                 // set by UpdateGamepad()
-            
-            _callbacks.Assign(io, platformio);                                              // assign platform callbacks
-            platformio.Platform_ClipboardUserData = IntPtr.Zero;
-
-            if (_iniSettings != null)                                           // ini settings
-            {
-                io.SetIniFilename(null);                                        // handle ini saving manually
-                ImGui.LoadIniSettingsFromMemory(_iniSettings.Load());           // call after CreateContext(), before first call to NewFrame()
-            }
-
-            return true;
-        }
-
-        public void Shutdown(ImGuiIOPtr io, ImGuiPlatformIOPtr platformio)
-        {
-            _callbacks.Unset(io, platformio);
-            io.SetBackendPlatformName(null);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void PrepareFrame(ImGuiIOPtr io, Rect displayRect)
+        public override void PrepareFrame(ImGuiIOPtr io, Rect displayRect)
         {
-            io.DisplaySize = displayRect.size;// setup display size (every frame to accommodate for window resizing)
-            // TODO: dpi aware, scale, etc
-
-            io.DeltaTime = Time.unscaledDeltaTime;                              // setup timestep
+            base.PrepareFrame(io, displayRect);
 
             // input
-            UpdateKeyboard(io);                                                 // update keyboard imGuiContext
-            UpdateMouse(io);                                                    // update mouse imGuiContext
+            UpdateKeyboard(io);                                                 // update keyboard ImGuiContext
+            UpdateMouse(io);                                                    // update mouse ImGuiContext
             UpdateCursor(io, ImGui.GetMouseCursor());                           // update Unity cursor with the cursor requested by ImGui
-
-            // ini settings
-            if (_iniSettings != null && io.WantSaveIniSettings)
-            {
-                _iniSettings.Save(ImGui.SaveIniSettingsToMemory());
-                io.WantSaveIniSettings = false;
-            }
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -220,23 +156,6 @@ namespace ImGuiNET
             io.AddMouseButtonEvent(1, Input.GetMouseButton(1));
             io.AddMouseButtonEvent(2, Input.GetMouseButton(2));
             io.AddMouseWheelEvent(Input.mouseScrollDelta.x, Input.mouseScrollDelta.y);
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        void UpdateCursor(ImGuiIOPtr io, ImGuiMouseCursor cursor)
-        {
-            if (io.MouseDrawCursor)
-                cursor = ImGuiMouseCursor.None;
-
-            if (_lastCursor == cursor)
-                return;
-            if ((io.ConfigFlags & ImGuiConfigFlags.NoMouseCursorChange) != 0)
-                return;
-
-            _lastCursor = cursor;
-            Cursor.visible = cursor != ImGuiMouseCursor.None;                   // hide cursor if ImGui is drawing it or if it wants no cursor
-            if (_cursorShapes != null)
-                Cursor.SetCursor(_cursorShapes[cursor].texture, _cursorShapes[cursor].hotspot, CursorMode.Auto);
         }
     }
 }

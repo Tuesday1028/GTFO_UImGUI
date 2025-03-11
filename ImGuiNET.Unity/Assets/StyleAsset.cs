@@ -9,7 +9,7 @@ namespace ImGuiNET
         public float Alpha = 1f;
 
         [Description("Additional alpha multiplier applied by BeginDisabled(). Multiply over current value of Alpha.")]
-        public float DisabledAlpha = 1f;
+        public float DisabledAlpha = 0.6f;
 
         [Description("Padding within a window.")]
         public Vector2 WindowPadding = new Vector2(10f, 10f);
@@ -239,7 +239,7 @@ namespace ImGuiNET
             s.GrabRounding                = GrabRounding;
             s.LogSliderDeadzone           = LogSliderDeadzone;
             s.TabRounding                 = TabRounding;
-            s.TabBorderSize               = TabBorderSize;
+            s.TabBorderSize               = TabBorderSize;   
             s.TabMinWidthForCloseButton   = TabMinWidthForCloseButton;
             s.TabBarBorderSize            = TabBarBorderSize;
             s.TabBarOverlineSize          = TabBarOverlineSize;

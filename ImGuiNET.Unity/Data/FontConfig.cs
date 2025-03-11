@@ -7,7 +7,7 @@ namespace ImGuiNET
     struct FontConfig
     {
         [Description("Index of font within TTF/OTF file.")]
-        public int FontIndexInFile;
+        public int FontNo;
 
         [Description("Size in pixels for rasterizer.")]
         public float SizeInPixels;
@@ -17,9 +17,6 @@ namespace ImGuiNET
 
         [Description("Align every glyph to pixel boundary. Useful e.g. if you are merging a non-pixel aligned font with the default font. If enabled, you can set OversampleH/V to 1.")]
         public bool PixelSnapH;
-
-        [Description("Extra spacing (in pixels) between glyphs. Only X axis is supported for now.")]
-        public Vector2 GlyphExtraSpacing;
 
         [Description("Offest all glyphs from this font input.")]
         public Vector2 GlyphOffset;
@@ -33,19 +30,27 @@ namespace ImGuiNET
         [Description("Maximum AdvanceX for glyphs.")]
         public float GlyphMaxAdvanceX;
 
+        [Description("Extra spacing (in pixels) between glyphs. Please contact us if you are using this.")]
+        public Vector2 GlyphExtraSpacing;
+
         [Description("Merge into previous ImFont, so you can combine multiple inputs font into one ImFont. You may want to use GlyphOffset.y when merge font of different heights.")]
         public bool MergeIntoPrevious;
 
-        // [Description("Settings for custom font rasterizer (e.g. FreeType). Leave as zero if you aren't using one.")]
-        // public uint RasterizerFlags;
+#if IMGUI_FEATURE_FREETYPE
+        [Description("Settings for custom font rasterizer (e.g. FreeType). Leave as zero if you aren't using one.")]
+        public ImFreetype.FontBuilderFlags FontBuilderFlags;
+#endif
 
         [Description("Brighten (>1.0f) or darken (<1.0f) font output. Brightening small fonts may be a good workaround to make them more readable.")]
         public float RasterizerMultiply;
 
+        [Description("DPI scale for rasterization, not altering other font metrics: make it easy to swap between e.g. a 100% and a 400% fonts for a zooming display. IMPORTANT: If you increase this it is expected that you increase font scale accordingly, otherwise quality may look lowered.")]
+        public float RasterizerDensity;
+
         [Description("Explicitly specify unicode codepoint of ellipsis character. When fonts are being merged first specified ellipsis will be used.")]
         public char EllipsisChar;
 
-        [Description("User-provided list of Unicode range (2 value per range, values are inclusive).")]
+        [Description("A user-provided list of Unicode range (2 value per range, values are inclusive, zero-terminated list).")]
         public Range[] CustomGlyphRanges;
 
         public void SetDefaults()
@@ -60,7 +65,7 @@ namespace ImGuiNET
 
         public void ApplyTo(ImFontConfigPtr im)
         {
-            im.FontNo = FontIndexInFile;
+            im.FontNo = FontNo;
             im.SizePixels = SizeInPixels;
             im.OversampleH = Oversample.x;
             im.OversampleV = Oversample.y;
@@ -70,8 +75,13 @@ namespace ImGuiNET
             im.GlyphMinAdvanceX = GlyphMinAdvanceX;
             im.GlyphMaxAdvanceX = GlyphMaxAdvanceX;
             im.MergeMode = MergeIntoPrevious;
-            // im.RasterizerFlags = RasterizerFlags;
+
+#if IMGUI_FEATURE_FREETYPE
+            im.FontBuilderFlags = FontBuilderFlags;
+#endif
+
             im.RasterizerMultiply = RasterizerMultiply;
+            im.RasterizerDensity = RasterizerDensity;
             im.EllipsisChar = EllipsisChar;
 
             // setting GlyphRanges requires allocating memory so it is not done here
@@ -81,7 +91,7 @@ namespace ImGuiNET
 
         public void SetFrom(ImFontConfigPtr im)
         {
-            FontIndexInFile = im.FontNo;
+            FontNo = im.FontNo;
             SizeInPixels = im.SizePixels;
             Oversample = new Vector2Int(im.OversampleH, im.OversampleV);
             PixelSnapH = im.PixelSnapH;
@@ -90,7 +100,7 @@ namespace ImGuiNET
             GlyphMinAdvanceX = im.GlyphMinAdvanceX;
             GlyphMaxAdvanceX = im.GlyphMaxAdvanceX;
             MergeIntoPrevious = im.MergeMode;
-            // RasterizerFlags = im.RasterizerFlags;
+            RasterizerDensity = im.RasterizerDensity;
             RasterizerMultiply = im.RasterizerMultiply;
             EllipsisChar = (char)im.EllipsisChar;
 

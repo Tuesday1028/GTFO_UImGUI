@@ -16,15 +16,14 @@ namespace Hikaria.UImGUI
             ClassInjector.RegisterTypeInIl2Cpp<ImGuiScreenSpaceCanvas>();
         }
 
-        // 使用 ImGuiScreenSpaceCanvas 则不需要设置相机
-        //[HarmonyPatch(typeof(CameraManager), nameof(CameraManager.ChangeToCamera))]
-        //private class CameraManager__ChangeToCamera__Patch
-        //{
-        //    private static void Postfix()
-        //    {
-        //        UImGui.Instance.SetCamera(CameraManager.GetCurrentCamera());
-        //    }
-        //}
+        [HarmonyPatch(typeof(CameraManager), nameof(CameraManager.ChangeToCamera))]
+        private class CameraManager__ChangeToCamera__Patch
+        {
+            private static void Postfix()
+            {
+                UImGui.Instance.SetCamera(CameraManager.GetCurrentCamera());
+            }
+        }
 
         [HarmonyPatch(typeof(GlobalSetup), nameof(GlobalSetup.Awake))]
         private static class GlobalSetup__Awake__Patch
@@ -45,7 +44,7 @@ namespace Hikaria.UImGUI
         {
             private static bool Prefix()
             {
-                if (UImGui.ShouldRender)
+                if (UImGui.ShouldBlockGameInput)
                 {
                     PlayerChatManager.ExitChatIfInChatMode();
                     return false;
@@ -59,7 +58,7 @@ namespace Hikaria.UImGUI
         {
             private static bool Prefix()
             {
-                if (UImGui.ShouldRender)
+                if (UImGui.ShouldBlockGameInput)
                 {
                     return false;
                 }
@@ -73,7 +72,7 @@ namespace Hikaria.UImGUI
         {
             private static void Prefix(ref bool value)
             {
-                if (UImGui.ShouldRender)
+                if (UImGui.ShouldBlockGameInput)
                 {
                     value = true;
                 }
@@ -86,7 +85,7 @@ namespace Hikaria.UImGUI
         {
             private static void Prefix(ref CursorLockMode value)
             {
-                if (UImGui.ShouldRender)
+                if (UImGui.ShouldBlockGameInput)
                 {
                     value = CursorLockMode.None;
                 }
@@ -98,7 +97,8 @@ namespace Hikaria.UImGUI
         {
             private static bool Prefix(ref float __result)
             {
-                if (Cursor.lockState == CursorLockMode.None || UImGui.ShouldRender)
+                var io = ImGui.GetIO();
+                if (Cursor.lockState == CursorLockMode.None || UImGui.ShouldBlockGameInput)
                 {
                     __result = 0f;
                     return false;
@@ -112,7 +112,7 @@ namespace Hikaria.UImGUI
         {
             private static bool Prefix(ref bool __result)
             {
-                if (Cursor.lockState == CursorLockMode.None || UImGui.ShouldRender)
+                if (Cursor.lockState == CursorLockMode.None || UImGui.ShouldBlockGameInput)
                 {
                     __result = false;
                     return false;
@@ -126,7 +126,7 @@ namespace Hikaria.UImGUI
         {
             private static bool Prefix(ref bool __result)
             {
-                if (Cursor.lockState == CursorLockMode.None || UImGui.ShouldRender)
+                if (Cursor.lockState == CursorLockMode.None || UImGui.ShouldBlockGameInput)
                 {
                     __result = false;
                     return false;
@@ -140,7 +140,7 @@ namespace Hikaria.UImGUI
         {
             private static bool Prefix(ref bool __result)
             {
-                if (Cursor.lockState == CursorLockMode.None || UImGui.ShouldRender)
+                if (Cursor.lockState == CursorLockMode.None || UImGui.ShouldBlockGameInput)
                 {
                     __result = false;
                     return false;

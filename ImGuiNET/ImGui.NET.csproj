@@ -6,7 +6,9 @@
     <Nullable>enable</Nullable>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <SignAssembly>False</SignAssembly>
-    <AssemblyVersion>1.91.6.1</AssemblyVersion>
+    <AssemblyVersion>1.91.8</AssemblyVersion>
+    <AssemblyName>ImGui.NET</AssemblyName>
+    <RootNamespace>ImGuiNET</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>

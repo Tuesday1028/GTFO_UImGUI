@@ -59,7 +59,7 @@ namespace ImGuiNET
             }
             
             // Create the render texture
-            myCamera.targetTexture = renderTexture = new RenderTexture(Screen.width, Screen.height, 0, GraphicsFormat.R16G16B16A16_SFloat)
+            myCamera.targetTexture = renderTexture = new RenderTexture(Screen.width, Screen.height, 0, GraphicsFormat.R32G32B32A32_SFloat)
             {
                 name = "ImGui Screen-Space Canvas",
                 hideFlags = HideFlags.DontSave

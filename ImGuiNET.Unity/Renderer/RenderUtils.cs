@@ -1,5 +1,4 @@
-﻿using UnityEngine.Assertions;
-using UnityEngine.Rendering;
+﻿using UnityEngine.Rendering;
 
 #if USING_HDRP
 using UnityEngine.Rendering.HighDefinition;

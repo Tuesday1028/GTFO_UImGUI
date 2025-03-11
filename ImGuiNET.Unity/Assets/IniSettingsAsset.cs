@@ -1,6 +1,4 @@
-﻿using UnityEngine;
-
-namespace ImGuiNET
+﻿namespace ImGuiNET
 {
     // TODO: ability to save to asset, in player prefs with custom key, custom ini file, etc
 
