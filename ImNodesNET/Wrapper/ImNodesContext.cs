@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ImNodesNET.Wrapper
+namespace ImNodesNET
 {
 	public unsafe struct ImNodesContext { }
 	public unsafe struct ImNodesContextPtr

@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 using UnityEngine;
 using static ImNodesNET.ImNodes;
 
-namespace ImNodesNET.Wrapper.Generated
+namespace ImNodesNET
 {
     public static unsafe partial class ImNodesNative
     {

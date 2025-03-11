@@ -1,10 +1,7 @@
-using System;
-using UnityEngine;
-using System.Runtime.InteropServices;
-using System.Text;
 using ImGuiNET;
-using ImNodesNET.Wrapper.Generated;
-using ImNodesNET.Wrapper;
+using System;
+using System.Text;
+using UnityEngine;
 
 namespace ImNodesNET
 {

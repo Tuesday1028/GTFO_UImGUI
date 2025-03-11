@@ -1,4 +1,4 @@
-namespace ImNodesNET.Wrapper.Generated
+namespace ImNodesNET
 {
     public enum ImNodesStyleVar
     {
