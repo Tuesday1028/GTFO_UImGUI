@@ -3,15 +3,19 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.13.35818.85
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImGui.NET.Unity", "ImGuiNET.Unity\ImGui.NET.Unity.csproj", "{F64C1EA7-982E-48B3-A14E-260DC687A6D8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImGui.NET.Unity", "ImGui.NET.Unity\ImGui.NET.Unity.csproj", "{F64C1EA7-982E-48B3-A14E-260DC687A6D8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImGui.NET", "ImGuiNET\ImGui.NET.csproj", "{20809C0B-B99D-40B5-BF9F-91883F0A1351}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImGui.NET", "ImGui.NET\ImGui.NET.csproj", "{20809C0B-B99D-40B5-BF9F-91883F0A1351}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImGuizmo.NET", "ImGuizmoNET\ImGuizmo.NET.csproj", "{F785F1B4-CAD5-AF51-AFC2-F9847F0DDC69}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImGuizmo.NET", "ImGuizmo.NET\ImGuizmo.NET.csproj", "{F785F1B4-CAD5-AF51-AFC2-F9847F0DDC69}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImNodes.NET", "ImNodesNET\ImNodes.NET.csproj", "{CFFD3754-2F5D-9624-9A4E-34929784A1F3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImNodes.NET", "ImNodes.NET\ImNodes.NET.csproj", "{CFFD3754-2F5D-9624-9A4E-34929784A1F3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImPlot.NET", "ImPlotNET\ImPlot.NET.csproj", "{AD1142CA-3392-529B-1491-99621F7A272B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImPlot.NET", "ImPlot.NET\ImPlot.NET.csproj", "{AD1142CA-3392-529B-1491-99621F7A272B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CodeGenerator", "CodeGenerator\CodeGenerator.csproj", "{ACAEFC88-9C91-A6A4-BBB7-C5B2BFE7C2E5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BuildHelper", "BuildHelper\BuildHelper.csproj", "{BE8CDA89-7A6C-4360-B863-0A46A79FCB17}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +43,14 @@ Global
 		{AD1142CA-3392-529B-1491-99621F7A272B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AD1142CA-3392-529B-1491-99621F7A272B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AD1142CA-3392-529B-1491-99621F7A272B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ACAEFC88-9C91-A6A4-BBB7-C5B2BFE7C2E5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ACAEFC88-9C91-A6A4-BBB7-C5B2BFE7C2E5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ACAEFC88-9C91-A6A4-BBB7-C5B2BFE7C2E5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ACAEFC88-9C91-A6A4-BBB7-C5B2BFE7C2E5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BE8CDA89-7A6C-4360-B863-0A46A79FCB17}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BE8CDA89-7A6C-4360-B863-0A46A79FCB17}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BE8CDA89-7A6C-4360-B863-0A46A79FCB17}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BE8CDA89-7A6C-4360-B863-0A46A79FCB17}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

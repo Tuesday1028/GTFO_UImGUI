@@ -1,0 +1,32 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <Description>A .NET wrapper for the ImPlot library.</Description>
+    <AssemblyVersion>0.16.0</AssemblyVersion>
+    <Authors></Authors>
+    <TargetFrameworks>net6.0</TargetFrameworks>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DebugType>portable</DebugType>
+    <AssemblyName>ImPlot.NET</AssemblyName>
+    <PackageId>ImPlot.NET</PackageId>
+    <PackagePrereleaseIdentifier></PackagePrereleaseIdentifier>
+    <PackageVersion>$(AssemblyVersion)$(PackagePrereleaseIdentifier)</PackageVersion>
+    <PackageTags>ImPlot ImGui ImGui.NET Immediate Mode GUI</PackageTags>
+    <PackageProjectUrl>https://github.com/mellinoe/imgui.net</PackageProjectUrl>
+    <DocumentationFile Condition="'$(Configuration)' == 'Release'">$(OutputPath)\ImPlot.NET.xml</DocumentationFile>
+    <RootNamespace>ImPlotNET</RootNamespace>
+    <GenerateDocumentationFile>False</GenerateDocumentationFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Remove="build\**" />
+    <EmbeddedResource Remove="build\**" />
+    <None Remove="build\**" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ImGui.NET\ImGui.NET.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="UnityEngine.CoreModule">
+      <HintPath>..\..\..\..\Program Files (x86)\Steam\steamapps\common\GTFO\BepInEx\interop\UnityEngine.CoreModule.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+</Project>

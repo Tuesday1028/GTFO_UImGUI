@@ -1,0 +1,33 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<DefineConstants>TRACE</DefineConstants>
+		<Optimize>true</Optimize>
+		<DebugType>pdbonly</DebugType>
+		<PlatformTarget>AnyCPU</PlatformTarget>
+		<ErrorReport>prompt</ErrorReport>
+		<TargetFramework>net6.0</TargetFramework>
+	</PropertyGroup>
+
+	<Target Name="Buildthing" AfterTargets="Build">
+		<Message Importance="High" Text="[#0] Cleaning up solution" />
+		<Exec Command="
+			  if exist $(SolutionDir)out rd /s /q $(SolutionDir)out
+			  mkdir $(SolutionDir)out
+			  "/>
+	</Target>
+	<Target Name="BuildLastSteps" AfterTargets="Buildthing">
+		<Exec Command="
+ECHO [#1] Building Solution ...
+cd $(SolutionDir)\ImGui.NET.Unity\
+dotnet clean -f $(TargetFramework) -c $(Configuration)
+dotnet build -f $(TargetFramework) -c $(Configuration)
+
+	ECHO [#2] Copying Targets to $(SolutionDir)out	  
+copy /y $(SolutionDir)\ImGui.NET\bin\$(Configuration)\$(TargetFramework)\ImGui.NET.dll $(SolutionDir)out\
+copy /y $(SolutionDir)\ImGuizmo.NET\bin\$(Configuration)\$(TargetFramework)\ImGuizmo.NET.dll $(SolutionDir)out\
+copy /y $(SolutionDir)\ImNodes.NET\bin\$(Configuration)\$(TargetFramework)\ImNodes.NET.dll $(SolutionDir)out\
+copy /y $(SolutionDir)\ImPlot.NET\bin\$(Configuration)\$(TargetFramework)\ImPlot.NET.dll $(SolutionDir)out\
+copy /y $(SolutionDir)\ImGui.NET.Unity\bin\$(Configuration)\$(TargetFramework)\ImGui.NET.Unity.dll $(SolutionDir)out\
+" />
+	</Target>
+</Project>
